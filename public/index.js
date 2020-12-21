@@ -1,19 +1,44 @@
-$("#anotherPage").click(function (e) {
-    console.log("did something");
-    $('#content').html("healskdlæaskdkasælk");
+$(document).ready(function() {
+    //Click på home når siden er loadet.
+    $("#home").click();
 });
 
+$("#about").click(function (event) {
+    const url = "/about";
+    event.preventDefault();
+    $(".content").load(url);
+});
+
+$("#home").click(function(event) {
+    const url = "/home";
+    event.preventDefault();
+    $(".content").load(url);
+})
 
 //if log in success.
-$("#buttonLogin").click(function (e) {
-    e.preventDefault();
-    console.log("clicked");
-    $(".login-container").toggle();
-    $(".logout-container").toggle();
+$("#login").on("submit", function(event) {
+    event.preventDefault();
+    const formValues = $(this).serialize();
+    $.ajax({
+        url: "/login",
+        type: "POST",
+        data: formValues,
+        success : function(data){
+             $("#login").toggle();
+             $("#logout").toggle();
+             $(".notifications").html(data);
+        },
+        error : function(data){
+            $(".notifications").html(data);
+        }
+    });
+   
 });
 
-$("#buttonLogout").click(function (e) {
-    e.preventDefault();
-    $(".logout-container").toggle();
-    $(".login-container").toggle();
+//TODO: ikke færdig.
+$("#logout").on("submit", function(event) {
+    event.preventDefault();
+    $("#logout").toggle();
+    $("#login").toggle();
 });
+

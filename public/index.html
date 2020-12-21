@@ -8,24 +8,25 @@
 </head>
 <body>
     <div class="topnav">
-            <a href="/home">Home</a>
-            <a href="javascript:;" id="anotherPage">AnotherPage</a>            
+            <a href="javascript:;" id="home">Home</a>
+            <a href="javascript:;" id="about">About</a>            
             
             <div class="login-container" style="float: right;">
-                <form>
+                <form id="login">
                     <input type="text" placeholder="Username" name="Username">
                     <input type="password" placeholder="Password" name="Password">
-                    <button id="buttonLogin">Login</button>
+                    <button type="submit">Login</button>
+                </form>
+                <form id="logout" style="display: none">
+                    <button type="submit">Logout</button>
                 </form>
             </div>
-            <div class="logout-container" style="float: right; display: none">
-                <form>
-                    <button id="buttonLogout">Logout</button>
-                </form>
-            </div>
+            
+            
     </div>
-    <div id="content">Change Me</div>
-
+    <div class="notifications"></div>
+    <div class="content"></div>
+    
     <script src="./index.js"></script>
 
 </body>
