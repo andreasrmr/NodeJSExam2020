@@ -26,6 +26,7 @@ $("#login").on("submit", function(event) {
         success : function(data){
              $("#login").toggle();
              $("#logout").toggle();
+             $(".loggedin").toggle();
              $(".notifications").html(data).css("color", "green");
         },
         error : function(data){
@@ -40,6 +41,7 @@ $("#logout").on("submit", function(event) {
     event.preventDefault();
     $("#logout").toggle();
     $("#login").toggle();
+    $(".loggedin").toggle();
     $(".notifications").html("You logged out").css("color", "red");
 });
 
