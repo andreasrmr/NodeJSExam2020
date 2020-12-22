@@ -5,7 +5,7 @@ const fs = require('fs');
 require('dotenv').config();
 
 //Bruges til POST og PUT til at retrieve data. eks. med req.body
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({extended: true}))   
 app.use(express.static(__dirname + "/public"));
 
 const authRoutes = require('./routes/auth.js');
@@ -37,5 +37,5 @@ const port = process.env.PORT || 3000
 
 app.listen(port, (err) => {
     if (err) { throw err };
-    console.log(`Server running on port: ${port}`)
+    console.log(`Server running on port: ${port}`);
 });
