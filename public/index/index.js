@@ -1,7 +1,7 @@
-//$(document).ready(function() {
-//    //Simuler click på home når siden er loadet.
-//    $("#home").click();
-//});
+$(document).ready(function() {
+    //Simuler click på home når siden er loadet.
+    $("#home").click();
+});
 
 $("#about").click(function (event) {
     const url = "/about";
@@ -26,7 +26,7 @@ $("#login").on("submit", function(event) {
         success : function(data){
              $("#login").toggle();
              $("#logout").toggle();
-             $(".notifications").html(data);
+             $(".notifications").html(data).css("color", "green");
         },
         error : function(data){
             $(".notifications").html(data);
@@ -40,6 +40,6 @@ $("#logout").on("submit", function(event) {
     event.preventDefault();
     $("#logout").toggle();
     $("#login").toggle();
-    $(".notifications").html("You logged out");
+    $(".notifications").html("You logged out").css("color", "red");
 });
 
