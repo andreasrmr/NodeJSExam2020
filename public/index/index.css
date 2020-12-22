@@ -42,3 +42,6 @@
     display: none;
 }
 
+#logout button {
+    color: red;
+}

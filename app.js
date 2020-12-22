@@ -4,6 +4,10 @@ const fs = require('fs');
 
 require('dotenv').config();
 
+//Bruges til POST og PUT til at retrieve data. eks. med req.body
+app.use(express.urlencoded({extended: true}))
+
+
 app.use(express.static(__dirname + "/public"));
 const authRoutes = require('./routes/auth.js');
 
