@@ -7,21 +7,26 @@ require('dotenv').config();
 app.use(express.static(__dirname + "/public"));
 const authRoutes = require('./routes/auth.js');
 
+
 app.use(authRoutes);
 
+const headerPage = fs.readFileSync(__dirname + '/public/header/header.html').toString();
+const indexPage = fs.readFileSync(__dirname + '/public/index/index.html').toString();
 const homePage = fs.readFileSync(__dirname + '/public/home/home.html').toString();
 const aboutPage = fs.readFileSync(__dirname + '/public/about/about.html').toString();
+const footerPage = fs.readFileSync(__dirname + '/public/footer/footer.html').toString();
+
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    return res.send(headerPage + indexPage + footerPage);
 });
 
 app.get('/home', (req, res) => {
-    res.send(homePage);
+    return res.send(homePage);
 });
 
 app.get('/about', (req, res) => {
-    res.send(aboutPage);
+    return res.send(aboutPage);
 });
 
 const port = process.env.PORT || 3000
