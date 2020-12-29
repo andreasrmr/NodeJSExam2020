@@ -90,25 +90,3 @@ async function getAuthPage(url) {
         }
     });
 }
-
-async function updateAccessToken() {
-    const url = '/auth/token';
-    const refreshToken = $.cookie("refreshToken");
-    const userId = $.cookie("userId");
-    const data = {
-        "token": refreshToken,
-        "userId": userId
-    }
-    await $.ajax({
-        type: 'POST',
-        url: url,
-        data: data,
-        ContentType: "application/json",
-        success : function(data){
-            $('.notifications').html(data);
-        },
-        error : function(data){
-            $('.notifications').html(data.responseText);
-        }
-    });
-}

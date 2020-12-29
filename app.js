@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
 
@@ -8,6 +9,9 @@ require('dotenv').config();
 app.use(express.urlencoded({extended: true}))
 app.use(express.json());    
 app.use(express.static(__dirname + "/public"));
+
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 const authRoutes = require('./routes/auth.js');
 app.use(authRoutes);
@@ -26,13 +30,25 @@ app.get('/home', (req, res) => {
     return res.send(homePage);
 });
 
-app.get('/about', (req, res) => {
+app.get('/about', authenticateToken, (req, res) => {
     return res.send(aboutPage);
 });
 
 app.get("/*", (req, res) => {
     return res.redirect("/");
 });
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if(token == null) return res.sendStatus(401);
+    
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if(err) { return res.sendStatus(401) }
+        req.user = user;
+        next(); 
+    });
+};
 
 const port = process.env.PORT || 3000
 
