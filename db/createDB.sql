@@ -15,9 +15,8 @@ CREATE TABLE refresh_tokens (
   FOREIGN KEY (id) REFERENCES users(id)
 );
 
-INSERT INTO users (id, username, password) VALUES
-(1, 'John', '123456'),
-(2, 'Jonas', '123');
+INSERT INTO users (email, password) VALUES
+('123', '123');
 
 
 insert into refreshTokens (id, token) VALUES (15, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiaGVqIiwiaWF0IjoxNjA2NzcxMDA5fQ.Uc5h7Z_l3fZonrpbwEnhyDTOxDLjz16Om1zjhAwaL0w");
