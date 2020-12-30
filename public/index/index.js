@@ -3,14 +3,6 @@ $(document).ready(function() {
     $("#home").click();
 });
 
-/*
-$("#about").click(function (event) {
-    const url = "/about";
-    event.preventDefault();
-    $(".content").load(url);
-});
-*/
-
 $("#home").click(function(event) {
     const url = "/home";
     event.preventDefault();
@@ -26,9 +18,7 @@ $("#login").on("submit", function(event) {
         type: "POST",
         data: formValues,
         success : function(data){
-             $("#login").toggle();
-             $("#logout").toggle();
-             $(".loggedin").toggle();
+            toggleLogin();
              $(".notifications").html(data).css("color", "green");
         },
         error : function(data){
@@ -41,9 +31,7 @@ $("#login").on("submit", function(event) {
 //TODO: ikke færdig.
 $("#logout").on("submit", function(event) {
     event.preventDefault();
-    $("#logout").toggle();
-    $("#login").toggle();
-    $(".loggedin").toggle();
+    toggleLogin();
     $(".notifications").html("You logged out").css("color", "red");
 });
 
@@ -89,4 +77,10 @@ async function getAuthPage(url) {
             $(".notifications").html(data.responseText);        
         }
     });
+}
+
+function toggleLogin(){
+    $("#login").toggle();
+    $("#logout").toggle();
+    $(".loggedin").toggle();
 }
