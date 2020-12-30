@@ -28,12 +28,25 @@ $("#login").on("submit", function(event) {
    
 });
 
-//TODO: ikke færdig.
-$("#logout").on("submit", function(event) {
-    event.preventDefault();
-    toggleLogin();
-    $(".notifications").html("You logged out").css("color", "red");
-});
+$('#logout').click(function (e) {
+    e.preventDefault();
+    const url = '/auth/logout';
+    const data = `refreshToken=${$.cookie("refreshToken")}`;
+    $.ajax({
+        url: url,
+        type:'POST',
+        data: data,
+        success : function(data, status, xhr){ 
+            console.log("success");
+            $('.notifications').html(data).css("color", "red");
+            toggleLogin();   
+        },
+        error : function(data){
+            console.log("error" + data);
+            $('.notifications').html(data);
+        }
+    });
+})
 
 $('#about').click(function (e){
     const url = '/about';
@@ -60,7 +73,11 @@ async function getAuthPage(url) {
                 $('.notifications').html(data);
             },
             error : function(data){
+                //accesstoken could not be refreshed
                 $('.notifications').html(data.responseText);
+                toggleLogin();
+                //naviger til "home"
+                $("#home").click();
             }
         });        
     }

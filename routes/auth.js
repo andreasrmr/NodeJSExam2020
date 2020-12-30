@@ -66,6 +66,20 @@ router.post("/auth/login", async (req, res) => {
     }
 });
 
+router.post("/auth/logout", async (req, res) => {
+    try {
+        const refreshToken = req.body.refreshToken;
+        //Sæt cookies på client.
+        res.cookie("accessToken", "");
+        res.cookie("refreshToken", "");
+        //delete old refreshToken if it exists
+        await pool.execute('DELETE FROM refresh_tokens WHERE token = ?', [refreshToken]);
+        return res.send("Your logged out");
+
+    }catch(err) {
+        return res.status(500).send(err);
+    }
+});
 
 
 router.post("/auth/register", async (req, res) => {
