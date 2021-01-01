@@ -57,7 +57,13 @@ $('#about').click(function (e){
 $('#chat').click(function (e){
     const url = '/chat';
     e.preventDefault();
-    getAuthPage(url); 
+    if($.cookie('accessToken') == null) {
+        renewAccessToken().done(getAuthPage(url));
+    }
+    else {
+        getAuthPage(url); 
+    }
+    
 });
 
 $('#registerButton').click(function(e){
@@ -66,34 +72,30 @@ $('#registerButton').click(function(e){
     $('.content').load(url);
 });
 
-async function getAuthPage(url) {
-    //renew accessToken if expired.
-    if($.cookie('accessToken') == null) {
-        const urlToken = '/auth/token';
-        const refreshToken = $.cookie('refreshToken');
-        const userId = $.cookie('userId');
-        const data = {
-            'token': refreshToken,
-            'userId': userId
+function renewAccessToken() {
+    return $.ajax({
+        type: 'POST',
+        url: '/auth/token',
+        data: {
+            'token': $.cookie('refreshToken'),
+            'userId': $.cookie('userId')
+        },
+        ContentType: 'application/json',
+        success : function(data){
+            $('.notifications').html(data);
+        },
+        error : function(data){
+            //accesstoken could not be refreshed
+            $('.notifications').html(data.responseText);
+            toggleLogin();
+            //naviger til 'home'
+            $('#home').click();
         }
-        await $.ajax({
-            type: 'POST',
-            url: urlToken,
-            data: data,
-            ContentType: 'application/json',
-            success : function(data){
-                $('.notifications').html(data);
-            },
-            error : function(data){
-                //accesstoken could not be refreshed
-                $('.notifications').html(data.responseText);
-                toggleLogin();
-                //naviger til 'home'
-                $('#home').click();
-            }
-        });        
-    }
-    await $.ajax({
+    });
+}
+
+function getAuthPage(url) {
+    return $.ajax({
         url: url,
         type:'GET',
         beforeSend: function(xhr) {
@@ -107,7 +109,6 @@ async function getAuthPage(url) {
         }
     });
 }
-
 
 function toggleLogin(){
     $('#login').toggle();

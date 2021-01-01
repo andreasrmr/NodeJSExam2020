@@ -6,12 +6,8 @@ const pool = require('./dbPool.js');
 //cookie optionas
 const accessTokenOptions = {
     maxAge: 5000, //30 sekunder bør sættes op
-    httpOnly: false 
-}
-
-const refreshTokenOptions = {
-    maxAge: 15000, //120 sekunder bør sættes op
-    httpOnly: false 
+    httpOnly: false,
+    sameSite: "None"
 }
 
 router.post("/auth/login", async (req, res) => {
@@ -41,7 +37,11 @@ router.post("/auth/login", async (req, res) => {
             
             //Store cookies in browser   
             res.cookie("accessToken", accessToken, accessTokenOptions);
-            res.cookie("refreshToken", refreshToken, refreshTokenOptions);
+            res.cookie("refreshToken", refreshToken, {
+                maxAge: 15000, //15 sekunder bør sættes op
+                httpOnly: false,
+                sameSite: "None" //sættes til "Secure" ved HTTPs
+            });
             res.cookie("userId", userId);
             res.cookie("email", email);
         
@@ -90,7 +90,7 @@ router.post("/auth/token", async (req, res) => {
         };
         const accessToken = generateAccessToken({ name: user.name })
         //save cookie
-        res.cookie("accessToken", accessToken, accessTokenOptions);       
+        res.cookie('accessToken', accessToken, accessTokenOptions);       
         res.send('new access token set.')
     })
 });
