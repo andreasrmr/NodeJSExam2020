@@ -2,7 +2,7 @@ $('#register').on('submit', function(event) {
     event.preventDefault();
     const formValues = $(this).serialize();
     $.ajax({
-        url: '/registration/register',
+        url: '/user/register',
         type: 'POST',
         data: formValues,
         success : function(data){
@@ -10,7 +10,6 @@ $('#register').on('submit', function(event) {
         },
         error : function(data){
             const errors = JSON.parse(data.responseText);
-            console.log(errors)
             let errorMsg = '';
             for(key in errors) {
                 for(value in errors[key]){

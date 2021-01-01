@@ -67,7 +67,13 @@ $('#chat').click(function (e){
 });
 
 $('#registerButton').click(function(e){
-    const url = '/registration/register';
+    const url = '/user/register';
+    e.preventDefault();
+    $('.content').load(url);
+});
+
+$('#forgotPasswordButton').click(function(e){
+    const url = '/user/forgotpassword';
     e.preventDefault();
     $('.content').load(url);
 });
