@@ -1,18 +1,7 @@
 const router = require('express').Router();
-const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-const pool = mysql.createPool({
-    host        : process.env.DB_HOST,
-    user        : process.env.DB_USER,
-    password    : process.env.DB_SECRET,
-    database    : process.env.DB_DBNAME,
-    port        : process.env.DB_PORT,
-    waitForConnections  : true,
-    connectionLimit     : 10,
-    queueLimit          : 0
-});
+const pool = require('./dbPool.js');
 
 //cookie optionas
 const accessTokenOptions = {
@@ -47,6 +36,7 @@ router.post("/auth/login", async (req, res) => {
             await pool.execute('DELETE FROM refresh_tokens WHERE id = ?', [userId]);
             
             //store new refreshToken in db
+            
             await pool.execute('INSERT INTO refresh_tokens SET id = ?, token = ?', [userId, refreshToken]);
             
             //Store cookies in browser   
@@ -108,7 +98,6 @@ router.post("/auth/token", async (req, res) => {
 function generateAccessToken(user) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '120s' })
 }
-
 
 module.exports = router;
 

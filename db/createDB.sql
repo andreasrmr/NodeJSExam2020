@@ -10,7 +10,7 @@ CREATE TABLE users (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 CREATE TABLE refresh_tokens ( 
-  token CHAR(124) UNIQUE,
+  token varchar(1000) UNIQUE,
   id int(11),
   FOREIGN KEY (id) REFERENCES users(id)
 );

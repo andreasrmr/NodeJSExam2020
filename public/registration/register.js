@@ -6,10 +6,10 @@ $('#register').on('submit', function(event) {
         type: 'POST',
         data: formValues,
         success : function(data){
-             $('.content').html(data).css('color', 'green');
+             $('.content').html(data);
         },
         error : function(data){
-            $('.content').html(data.responseText).css('color', 'red');
+            $('.content').html(data.responseText);
         }
     });
 });
