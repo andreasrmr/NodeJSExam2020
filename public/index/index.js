@@ -108,6 +108,7 @@ async function getAuthPage(url) {
     });
 }
 
+
 function toggleLogin(){
     $('#login').toggle();
     $('#logout').toggle();
