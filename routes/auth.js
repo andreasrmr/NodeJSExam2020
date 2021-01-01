@@ -81,20 +81,6 @@ router.post("/auth/logout", async (req, res) => {
     }
 });
 
-
-router.post("/auth/register", async (req, res) => {
-    try {
-        const plainTextPassword = req.body.password;
-        const email = req.body.email;
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(plainTextPassword, saltRounds);
-        await pool.execute('INSERT INTO users SET email = ?, password = ?', [email, hashedPassword]);
-        return res.redirect("/login");
-    } catch (err) {
-        return res.status(500).send(err);
-    }
-});
-
 //User can renew access access token with their refreshToken.
 router.post("/auth/token", async (req, res) => {
     const refreshToken = req.body.token;

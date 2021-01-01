@@ -1,8 +1,8 @@
-$(document).ready(function() {
+/*$(document).ready(function() {
     //Simuler click på home når siden er loadet.
-    $('#home').click();
+    //$('#home').click();
 });
-
+*/
 $('#home').click(function(event) {
     const url = '/home';
     event.preventDefault();
@@ -28,8 +28,8 @@ $('#login').on('submit', function(event) {
    
 });
 
-$('#logout').click(function (e) {
-    e.preventDefault();
+$('#logout').on('submit', function (event) {
+    event.preventDefault();
     const url = '/auth/logout';
     const refreshToken = $.cookie('refreshToken');
     const data = `refreshToken=${refreshToken}`;
@@ -58,6 +58,12 @@ $('#chat').click(function (e){
     const url = '/chat';
     e.preventDefault();
     getAuthPage(url); 
+});
+
+$('#registerButton').click(function(e){
+    const url = '/registration/register';
+    e.preventDefault();
+    $('.content').load(url);
 });
 
 async function getAuthPage(url) {

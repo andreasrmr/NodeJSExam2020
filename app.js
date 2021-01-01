@@ -16,11 +16,15 @@ app.use(cookieParser());
 const authRoutes = require('./routes/auth.js');
 app.use(authRoutes);
 
+const registrationRoutes = require('./routes/registration.js');
+app.use(registrationRoutes)
+
 const headerPage = fs.readFileSync(__dirname + '/public/header/header.html').toString();
 const indexPage = fs.readFileSync(__dirname + '/public/index/index.html').toString();
 const homePage = fs.readFileSync(__dirname + '/public/home/home.html').toString();
 const aboutPage = fs.readFileSync(__dirname + '/public/about/about.html').toString();
 const footerPage = fs.readFileSync(__dirname + '/public/footer/footer.html').toString();
+const chatPage = fs.readFileSync(__dirname + '/public/chat/chat.html').toString();
 
 app.get('/', (req, res) => {
     return res.send(headerPage + indexPage + footerPage);
@@ -30,8 +34,12 @@ app.get('/home', (req, res) => {
     return res.send(homePage);
 });
 
-app.get('/about', authenticateToken, (req, res) => {
+app.get('/about', (req, res) => {
     return res.send(aboutPage);
+});
+
+app.get('/chat', authenticateToken, (req, res) => {
+    return res.send(chatPage);
 });
 
 app.get("/*", (req, res) => {
@@ -50,9 +58,35 @@ function authenticateToken(req, res, next) {
     });
 };
 
+//chat
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const escapeHtml = require("escape-html");
+
+io.on("connection", (socket) => {
+    socket.on("client changed color", ({ data }) => {
+        // broadcasts to all sockets in this namespace
+        //io.emit("server sending the color", { data: data });
+
+        // only emits to the socket in this very callback
+        // socket.emit("server sending the color", { data: data });
+
+        // sends data to all but not itself
+        socket.broadcast.emit("server sending the color", { data: data });
+    });
+
+    socket.on("client submits chat message", ({ data }) => {
+        io.emit("server sends the chat message", { data: escapeHtml(data) });
+    });
+
+    socket.on("disconnect", () => {
+        // console.log("A socket disconnected. byeeeeeee");
+    });
+});
+
 const port = process.env.PORT || 3000
 
-app.listen(port, (err) => {
+server.listen(port, (err) => {
     if (err) { throw err };
     console.log(`Server running on port: ${port}`);
 });
