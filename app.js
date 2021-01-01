@@ -8,7 +8,7 @@ require('dotenv').config();
 //Bruges til POST og PUT til at retrieve data. eks. med req.body
 app.use(express.urlencoded({extended: true}))
 app.use(express.json());    
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + '/public'));
 
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -42,8 +42,8 @@ app.get('/chat', authenticateToken, (req, res) => {
     return res.send(chatPage);
 });
 
-app.get("/*", (req, res) => {
-    return res.redirect("/");
+app.get('/*', (req, res) => {
+    return res.redirect('/');
 });
 
 function authenticateToken(req, res, next) {
@@ -61,26 +61,26 @@ function authenticateToken(req, res, next) {
 //chat
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const escapeHtml = require("escape-html");
+const escapeHtml = require('escape-html');
 
-io.on("connection", (socket) => {
-    socket.on("client changed color", ({ data }) => {
+io.on('connection', (socket) => {
+    socket.on('client changed color', ({ data }) => {
         // broadcasts to all sockets in this namespace
-        //io.emit("server sending the color", { data: data });
+        //io.emit('server sending the color', { data: data });
 
         // only emits to the socket in this very callback
-        // socket.emit("server sending the color", { data: data });
+        // socket.emit('server sending the color', { data: data });
 
         // sends data to all but not itself
-        socket.broadcast.emit("server sending the color", { data: data });
+        socket.broadcast.emit('server sending the color', { data: data });
     });
 
-    socket.on("client submits chat message", ({ data }) => {
-        io.emit("server sends the chat message", { data: escapeHtml(data) });
+    socket.on('client submits chat message', ({ data }) => {
+        io.emit('server sends the chat message', { data: escapeHtml(data) });
     });
 
-    socket.on("disconnect", () => {
-        // console.log("A socket disconnected. byeeeeeee");
+    socket.on('disconnect', () => {
+        // console.log('A socket disconnected. byeeeeeee');
     });
 });
 

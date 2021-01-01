@@ -5,15 +5,16 @@ const pool = require('./dbPool.js');
 const bcrypt = require('bcrypt');
 
 const registerPage = fs.readFileSync(path.join(__dirname + '/../public/registration/register.html')).toString();
-const { body, validationResult } = require('express-validator');
 router.get('/registration/register', (req, res) => {
     return res.send(registerPage);
 });
 
+const { body, validationResult } = require('express-validator');
+
 router.post('/registration/register',
-    body('email', "Email is not valid").isEmail().escape(),
-    body('password', "Password: min 5 characters").isLength({min: 5}).escape(),
-    body('password', "Passwords needs to match").custom((value, { req }) => value === req.body.passwordC),
+    body('email', 'Email is not valid').isEmail().escape(),
+    body('password', 'Password: min 5 characters').isLength({min: 5}).escape(),
+    body('password', 'Passwords needs to match').custom((value, { req }) => value === req.body.passwordC),
     async (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){

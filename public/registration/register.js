@@ -11,13 +11,13 @@ $('#register').on('submit', function(event) {
         error : function(data){
             const errors = JSON.parse(data.responseText);
             console.log(errors)
-            let errorMsg = "";
+            let errorMsg = '';
             for(key in errors) {
                 for(value in errors[key]){
-                    errorMsg += errors[key][value].msg + "<br>";
+                    errorMsg += errors[key][value].msg + '<br>';
                 }
             }
-            $('#errors').html(errorMsg).css("color", "red");
+            $('#errors').html(errorMsg).css('color', 'red');
         }
     });
 });
