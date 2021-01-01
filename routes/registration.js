@@ -11,8 +11,9 @@ router.get('/registration/register', (req, res) => {
 });
 
 router.post('/registration/register',
-    body('email').isEmail(),
-    body('password').isLength({ min: 5}),
+    body('email', "Email is not valid").isEmail().escape(),
+    body('password', "Password: min 5 characters").isLength({min: 5}).escape(),
+    body('password', "Passwords needs to match").custom((value, { req }) => value === req.body.passwordC),
     async (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){

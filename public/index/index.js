@@ -30,13 +30,13 @@ $('#login').on('submit', function(event) {
 
 $('#logout').on('submit', function (event) {
     event.preventDefault();
-    const url = '/auth/logout';
-    const refreshToken = $.cookie('refreshToken');
-    const data = `refreshToken=${refreshToken}`;
     $.ajax({
-        url: url,
+        url: '/auth/logout',
         type:'POST',
-        data: data,
+        data: {
+            "refreshToken" : $.cookie('refreshToken')
+        },
+        //`refreshToken=${$.cookie('refreshToken')}`,
         success : function(data, status, xhr){ 
             $('.notifications').html(data).css('color', 'red');
             toggleLogin();   
@@ -57,7 +57,7 @@ $('#about').click(function (e){
 $('#chat').click(function (e){
     const url = '/chat';
     e.preventDefault();
-    if($.cookie('accessToken') == null) {
+    if(($.cookie('accessToken')) == null) {
         renewAccessToken().done(getAuthPage(url));
     }
     else {

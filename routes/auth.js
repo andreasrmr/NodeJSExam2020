@@ -5,9 +5,8 @@ const pool = require('./dbPool.js');
 
 //cookie optionas
 const accessTokenOptions = {
-    maxAge: 5000, //30 sekunder bør sættes op
-    httpOnly: false,
-    sameSite: "None"
+    maxAge: 30000, //30 sekunder bør sættes op
+    httpOnly: false
 }
 
 router.post("/auth/login", async (req, res) => {
@@ -31,16 +30,14 @@ router.post("/auth/login", async (req, res) => {
             //delete old refreshToken if it exists
             await pool.execute('DELETE FROM refresh_tokens WHERE id = ?', [userId]);
             
-            //store new refreshToken in db
-            
+            //store new refreshToken in db   
             await pool.execute('INSERT INTO refresh_tokens SET id = ?, token = ?', [userId, refreshToken]);
             
             //Store cookies in browser   
             res.cookie("accessToken", accessToken, accessTokenOptions);
             res.cookie("refreshToken", refreshToken, {
-                maxAge: 15000, //15 sekunder bør sættes op
-                httpOnly: false,
-                sameSite: "None" //sættes til "Secure" ved HTTPs
+                maxAge: 90000, //90 sekunder bør sættes op
+                httpOnly: false
             });
             res.cookie("userId", userId);
             res.cookie("email", email);
