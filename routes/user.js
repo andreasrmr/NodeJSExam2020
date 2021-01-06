@@ -1,12 +1,11 @@
 const router = require('express').Router();
 const fs = require('fs');
 const path = require('path');
-const pool = require('./dbPool.js');
-const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
+const pool = require(path.join(__dirname + '/../configs/dbPool.js'));
 
 const registerPage = fs.readFileSync(path.join(__dirname + '/../public/user/register.html')).toString();
 const forgotPasswordPage = fs.readFileSync(path.join(__dirname + '/../public/user/forgotpassword.html')).toString();
+const insertKeyPage = fs.readFileSync(path.join(__dirname + '/../public/user/forgotpasswordKey.html')).toString();
 
 const lib = require('./lib.js');
 
@@ -16,6 +15,10 @@ router.get('/user/register', (req, res) => {
 
 router.get('/user/forgotpassword', (req, res) => {
     return res.send(forgotPasswordPage);
+})
+
+router.get('/user/forgotpasswordKey', (req, res) => {
+    return res.send(insertKeyPage)
 })
 
 const { body, validationResult } = require('express-validator');
@@ -33,8 +36,7 @@ router.post('/user/register',
         try {
             const plainTextPassword = req.body.password;
             const email = req.body.email;
-            const saltRounds = 10;
-            const hashedPassword = await bcrypt.hash(plainTextPassword, saltRounds);
+            const hashedPassword = await lib.hashPw(plainTextPassword);
             await pool.execute('INSERT INTO users SET email = ?, password = ?', [email, hashedPassword]);
             return res.send('user created');
         } catch (err) {
@@ -44,51 +46,90 @@ router.post('/user/register',
 });
 
 router.post('/user/forgotpassword', async (req, res) => {
-    const email = req.body.email;  
-    const subject = "Forgot password"; 
-    const temporaryPassword = Math.random().toString(36).slice(-8);
+    
     try {
-        const hashedPassword = await lib.hashPw(temporaryPassword);
-        await pool.execute('UPDATE users SET password=? WHERE email=?',[hashedPassword, email]);    
+        //check if user exists.
+        const [rows] = await pool.execute('SELECT id FROM users where email = ?', [req.body.email])
+        if(rows[0] === undefined || rows[0].length == 0) {
+            return res.status(403).send('Email does not exist');
+        };
+        //if exists
+
+        const userId = rows[0].id
+        //Set cookie with id
+        res.cookie('userId', userId);
+
+
+        //delete key if it already exists
+        await pool.execute('DELETE FROM forgot_password_keys SET id = ?', [userId])
+
+        //generate key to reset password
+        const tempKey = Math.random().toString(36).slice(-8);
+
+        //store key in db
+        await pool.execute('INSERT INTO forgot_password_keys SET id = ?, pwKey = ?', [userId, tempKey]);
+
+        //create and send mail to user email.
+        const email = req.body.email;  
+        const subject = "Forgot password";
+        const output = `
+        <h3>Password reset!</h3>
+        <h2>Key to reset password: ${tempKey}</h2>
+        `
+        const transporter = require(path.join(__dirname + '/../configs/nodemailer.js')); 
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: subject, 
+            html: output
+        };
+    
+        transporter.sendMail(mailOptions, (err, data) => {
+            if(err){
+                res.status(401).send(`Email not sent; Error ${err}`);
+            } else {
+                console.log("got here");
+                res.redirect('/user/forgotpasswordKey')
+            }
+        });
+
     }catch(err){
         console.log(err);
     }
-    
-    const output = `
-        <h3>Password reset!</h3>
-        <h2>New password: ${temporaryPassword}</h2>
-        `
-    
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        service: 'gmail',
-        secure: false, 
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.EMAIL_PASSWORD
-        }, 
-        tls: {
-            rejectUnauthorized:false
-        }
-    });
-
-    const mailOptions = {
-        from: process.env.EMAIL,
-        to: email,
-        subject: subject, 
-        html: output
-    };
-
-    transporter.sendMail(mailOptions, (err, data) => {
-        if(err){
-            console.log(`Error: ${err}`);
-            res.status(401).send('Email not sent');
-        } else {
-            res.status(200).send('Email sent');
-        }
-    });
 
 });
+
+router.post('/user/submitTempKey', async(req, res) => {
+    try {
+        const tempKey = req.body.key;
+        const userId = req.cookies['userId'];
+        //--INSERT INTO forgot_password_keys(id, pwKey) VALUES (7, "3bnp7cbz");
+        const [rows] = await pool.execute('SELECT pwKey FROM forgot_password_keys WHERE id = ?', [userId]);
+        if(rows[0] === undefined || rows[0].length == 0) {
+            return res.status(403).send('Key expired / wrong id, try again.');
+        };
+        if(tempKey === rows[0].pwKey){
+            console.log("match");
+        }
+        
+
+
+    } catch (err) {
+        console.log(err);
+    }
+    
+})
+
+router.post('/user/changePassword', async(req, res) => {
+    console.log(req.body.changeToPassword)
+    console.log(req.body.confirmPassword)
+    try {
+        const hashedPassword = await lib.hashPw(plainTextPassword);
+        //await pool.execute('UPDATE users SET password=? WHERE email=?',[hashedPassword, email]);    
+    }catch(err){
+        console.log(err);
+    }  
+})
 /*
 router.post('/registration/createTestUser', async (req, res) => {
     try {
