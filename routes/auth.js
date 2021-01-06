@@ -2,7 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const pool = require(path.join(__dirname + '/../configs/dbPool.js'));
+const pool = require(path.join(__dirname + '/../configs/mysqlPool.js'));
 
 //cookie optionas
 const accessTokenOptions = {

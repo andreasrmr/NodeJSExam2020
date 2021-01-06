@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const fs = require('fs');
 const path = require('path');
-const pool = require(path.join(__dirname + '/../configs/dbPool.js'));
+const pool = require(path.join(__dirname + '/../configs/mysqlPool.js'));
 
 const forgotPasswordPage = fs.readFileSync(path.join(__dirname + '/../public/forgotpassword/submitEmail.html')).toString();
 const insertKeyPage = fs.readFileSync(path.join(__dirname + '/../public/forgotpassword/submitTempKey.html')).toString();
