@@ -101,15 +101,24 @@ router.post('/forgotpassword/submitTempKey', async(req, res) => {
 router.post('/forgotpassword/changePassword', 
     body('password', 'Password: min 5 characters').isLength({min: 8}).escape(),
     body('changeToPassword', 'Passwords needs to match').custom((value, { req }) => value === req.body.confirmPassword),
-    async(req, res) => {       
-    try {
-        const userId = req.cookies['userId'];
-        const hashedPassword = await lib.hashPw(plainTextPassword);
-        await pool.execute('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId]);
-        //problem - Der bør oprettes en token. der bekræfter at det er den rigtig bruger der kalder denne post.
-    }catch(err){
-        console.log(err);
-    }  
+    async(req, res) => {    
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        //TODO fix frontenddelen af dette return.
+        return res.status(400).json({ errors: errors.array() })
+    }
+    //TODO check om brugeren eksistere i forvejen.
+    else {
+        try {
+            const userId = req.cookies['userId'];
+            const hashedPassword = await lib.hashPw(plainTextPassword);
+            await pool.execute('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId]);
+            //problem - Der bør oprettes en token. der bekræfter at det er den rigtig bruger der kalder denne post.
+        }catch(err){
+            console.log(err);
+        }  
+    }
+    
 })
 
 module.exports = router;
