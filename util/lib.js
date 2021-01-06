@@ -5,5 +5,6 @@ async function hashPw(plainTextPassword){
     const hashedPassword = await bcrypt.hash(plainTextPassword, saltRounds);
     return hashedPassword;
 }
+
 //module.exports = { hashPw, anotherHere};
 module.exports = { hashPw };

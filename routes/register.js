@@ -5,7 +5,7 @@ const pool = require(path.join(__dirname + '/../configs/mysqlPool.js'));
 
 const registerPage = fs.readFileSync(path.join(__dirname + '/../public/user/register.html')).toString();
 
-const lib = require('./lib.js');
+const lib = require(path.join(__dirname + '/../util/lib.js'));
 
 router.get('/user/register', (req, res) => {
     return res.send(registerPage);

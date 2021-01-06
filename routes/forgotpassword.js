@@ -7,7 +7,7 @@ const forgotPasswordPage = fs.readFileSync(path.join(__dirname + '/../public/for
 const insertKeyPage = fs.readFileSync(path.join(__dirname + '/../public/forgotpassword/submitTempKey.html')).toString();
 const changePasswordPage = fs.readFileSync(path.join(__dirname + '/../public/forgotpassword/changePassword.html')).toString();
 
-const lib = require('./lib.js');
+const lib = require(path.join(__dirname + '/../util/lib.js'));
 
 router.get('/forgotpassword/submitEmail', (req, res) => {
     return res.send(forgotPasswordPage);
