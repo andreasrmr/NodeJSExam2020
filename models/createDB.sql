@@ -22,7 +22,6 @@ CREATE TABLE forgot_password_keys (
   FOREIGN KEY (id) REFERENCES users(id)
 );
 
-
 --INSERT INTO users (email, password) VALUES ('123', '123');
 
 --INSERT INTO refreshTokens (id, token) VALUES (15, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiaGVqIiwiaWF0IjoxNjA2NzcxMDA5fQ.Uc5h7Z_l3fZonrpbwEnhyDTOxDLjz16Om1zjhAwaL0w");
