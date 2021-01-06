@@ -16,8 +16,11 @@ app.use(cookieParser());
 const authRoutes = require('./routes/auth.js');
 app.use(authRoutes);
 
-const userRoutes = require('./routes/user.js');
-app.use(userRoutes)
+const registerRoutes = require('./routes/register.js');
+app.use(registerRoutes);
+
+const forgotPasswordRoutes = require('./routes/forgotpassword.js');
+app.use(forgotPasswordRoutes);
 
 const headerPage = fs.readFileSync(__dirname + '/public/header/header.html').toString();
 const indexPage = fs.readFileSync(__dirname + '/public/index/index.html').toString();

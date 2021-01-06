@@ -36,13 +36,11 @@ $('#logout').on('submit', function (event) {
         data: {
             "refreshToken" : $.cookie('refreshToken')
         },
-        //`refreshToken=${$.cookie('refreshToken')}`,
         success : function(data, status, xhr){ 
             $('.notifications').html(data).css('color', 'red');
             toggleLogin();   
         },
         error : function(data){
-            console.log('error' + data);
             $('.notifications').html(data);
         }
     });
@@ -73,7 +71,7 @@ $('#registerButton').click(function(e){
 });
 
 $('#forgotPasswordButton').click(function(e){
-    const url = '/user/forgotpassword';
+    const url = '/forgotpassword/submitEmail';
     e.preventDefault();
     $('.content').load(url);
 });
