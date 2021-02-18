@@ -1,8 +1,3 @@
-/*$(document).ready(function() {
-    //Simuler click på home når siden er loadet.
-    //$('#home').click();
-});
-*/
 $('#home').click(function(event) {
     const url = '/home';
     event.preventDefault();
