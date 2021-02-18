@@ -79,7 +79,6 @@ router.post('/forgotpassword/submitTempKey', async(req, res) => {
     try {
         const tempKey = req.body.key;
         const userId = req.cookies['userId'];
-        //--INSERT INTO forgot_password_keys(id, pwKey) VALUES (7, "3bnp7cbz");
         const [rows] = await pool.execute('SELECT pwKey FROM forgot_password_keys WHERE id = ?', [userId]);
         if(rows[0] === undefined || rows[0].length == 0) {
             return res.status(403).send('Key expired / wrong id, try again.');
@@ -98,27 +97,29 @@ router.post('/forgotpassword/submitTempKey', async(req, res) => {
     
 })
 
+
 router.post('/forgotpassword/changePassword', 
-    body('password', 'Password: min 5 characters').isLength({min: 8}).escape(),
-    body('changeToPassword', 'Passwords needs to match').custom((value, { req }) => value === req.body.confirmPassword),
-    async(req, res) => {    
+body('changeToPassword', 'Password: min 8 characters').isLength({min: 8}).escape(),
+body('changeToPassword', 'Passwords needs to match').custom((value, { req }) => value === req.body.confirmPassword),
+async(req, res) => {    
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         //TODO fix frontenddelen af dette return.
         return res.status(400).json({ errors: errors.array() })
     }
-    //TODO check om brugeren eksistere i forvejen.
+        //TODO check om brugeren eksistere i forvejen.
     else {
+        const plainTextPassword = req.body.changeToPassword
         try {
             const userId = req.cookies['userId'];
             const hashedPassword = await lib.hashPw(plainTextPassword);
             await pool.execute('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId]);
+            return res.send("Password changed");
             //problem - Der bør oprettes en token. der bekræfter at det er den rigtig bruger der kalder denne post.
         }catch(err){
             console.log(err);
         }  
     }
-    
-})
+});
 
 module.exports = router;
