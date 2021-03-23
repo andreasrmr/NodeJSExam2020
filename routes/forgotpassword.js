@@ -14,7 +14,7 @@ router.get('/forgotpassword/submitEmail', (req, res) => {
 });
 
 router.get('/forgotpassword/submitTempKey', (req, res) => {
-    return res.send(insertKeyPage)
+    return res.send(insertKeyPage);
 });
 
 router.get('/forgotpassword/changePassword', (req, res) => {

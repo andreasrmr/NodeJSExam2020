@@ -4,7 +4,6 @@ $('#home').click(function(event) {
     $('.content').load(url);
 });
 
-//if log in success.
 $('#login').on('submit', function(event) {
     event.preventDefault();
     const formValues = $(this).serialize();
@@ -20,7 +19,6 @@ $('#login').on('submit', function(event) {
             $('.notifications').html(data.responseText).css('color', 'red');
         }
     });
-   
 });
 
 $('#logout').on('submit', function (event) {

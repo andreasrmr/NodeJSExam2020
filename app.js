@@ -28,6 +28,7 @@ const homePage = fs.readFileSync(__dirname + '/public/home/home.html').toString(
 const aboutPage = fs.readFileSync(__dirname + '/public/about/about.html').toString();
 const footerPage = fs.readFileSync(__dirname + '/public/footer/footer.html').toString();
 const chatPage = fs.readFileSync(__dirname + '/public/chat/chat.html').toString();
+const loginPage = fs.readFileSync(__dirname + '/public/login/login.html').toString();
 
 app.get('/', (req, res) => {
     return res.send(headerPage + indexPage + footerPage);
@@ -39,6 +40,10 @@ app.get('/home', (req, res) => {
 
 app.get('/about', (req, res) => {
     return res.send(aboutPage);
+});
+
+app.get('/login', (req, res) => {
+    return res.send(loginPage);
 });
 
 app.get('/chat', authenticateToken, (req, res) => {
